@@ -13,7 +13,13 @@
         android:adjustViewBounds="true"
         android:layout_gravity="center"
         android:layout_margin="50dp"
-        android:src="@mipmap/bg_3" />
+        android:src="@mipmap/bg_color" />
+
+    <Button
+        android:id="@+id/bt0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="还原" />
 
     <Button
         android:id="@+id/bt1"

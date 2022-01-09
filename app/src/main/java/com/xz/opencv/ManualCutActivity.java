@@ -26,6 +26,13 @@ public class ManualCutActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_manual_cut);
 		imageView = findViewById(R.id.image);
+		Button bt0 = findViewById(R.id.bt0);
+		bt0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				imageView.setImageResource(R.mipmap.bg_color);
+			}
+		});
 		Button bt1 = findViewById(R.id.bt1);
 		bt1.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -41,6 +48,7 @@ public class ManualCutActivity extends AppCompatActivity {
 				color();
 			}
 		});
+
 	}
 
 	/**
@@ -74,31 +82,27 @@ public class ManualCutActivity extends AppCompatActivity {
 	public void color() {
 		Mat src = null;
 		try {
-			src = Utils.loadResource(ManualCutActivity.this, R.mipmap.bg_3);
+			src = Utils.loadResource(ManualCutActivity.this, R.mipmap.bg_color);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
 		//手动指定切割区域
-		Rect rect = new Rect(55, 108, 365, 269);
-		Mat dst = new Mat(src, rect);
-		Imgproc.cvtColor(dst,dst,Imgproc.COLOR_BGR2RGB);
-		Imgproc.cvtColor(dst,dst,Imgproc.COLOR_RGB2HSV);
+		Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2HSV);
 
-		Core.inRange(dst,new Scalar(160,90,90),new Scalar(180,255,255),dst);
+		Core.inRange(src,new Scalar(100,100,100),new Scalar(125,255,255),src);
 
 		//这就是一个运算核，一个3x3的矩阵
-		Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,new Size(3,3));
+		Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
 		//进行开运算
-		Imgproc.morphologyEx(dst,dst,Imgproc.MORPH_OPEN,kernel);
+		Imgproc.morphologyEx(src, src, Imgproc.MORPH_OPEN, kernel);
 		//进行闭运算
-		Imgproc.morphologyEx(dst,dst,Imgproc.MORPH_CLOSE,kernel);
+		Imgproc.morphologyEx(src, src, Imgproc.MORPH_CLOSE, kernel);
 
-		Bitmap resultBitmap = Bitmap.createBitmap(dst.width(), dst.height(), Bitmap.Config.ARGB_8888);
-		Utils.matToBitmap(dst, resultBitmap);
+		Bitmap resultBitmap = Bitmap.createBitmap(src.width(), src.height(), Bitmap.Config.ARGB_8888);
+		Utils.matToBitmap(src, resultBitmap);
 		imageView.setImageBitmap(resultBitmap);
 
-		dst.release();
 		src.release();
 	}
 
